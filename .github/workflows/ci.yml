@@ -1,0 +1,43 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Python — Pytest & Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests with coverage
+        run: pytest tests/ -v --cov=app --cov-report=xml --cov-report=term-missing
+        env:
+          # Use SQLite for tests — mocked Kafka, no real Postgres/Kafka needed
+          DATABASE_URL: sqlite+aiosqlite:///./test.db
+          KAFKA_BOOTSTRAP_SERVERS: localhost:9092
+          KAFKA_TOPIC_NOTIFICATIONS: notifications
+          API_KEY: internal-service-key-change-in-prod
+          SLACK_ENABLED: "false"
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage.xml
+          if-no-files-found: warn
