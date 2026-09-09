@@ -43,7 +43,7 @@ class Notification(Base):
     recipient: Mapped[str | None] = mapped_column(String(200))
     source_service: Mapped[str | None] = mapped_column(String(100))  # which service sent this event
     event_type: Mapped[str | None] = mapped_column(String(100))      # e.g. "user.registered", "order.completed"
-    metadata: Mapped[dict | None] = mapped_column(JSON)              # arbitrary event payload
+    extra_data: Mapped[dict | None] = mapped_column(JSON)             # arbitrary event payload
     kafka_topic: Mapped[str | None] = mapped_column(String(200))
     kafka_offset: Mapped[int | None] = mapped_column()
     # Idempotency key — prevents duplicate notifications from Kafka at-least-once delivery.

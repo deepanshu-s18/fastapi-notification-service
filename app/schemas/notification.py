@@ -30,14 +30,14 @@ class NotificationResponse(BaseModel):
     recipient: str | None
     source_service: str | None
     event_type: str | None
-    metadata: dict[str, Any] | None
+    metadata: dict[str, Any] | None = Field(default=None, validation_alias="extra_data")
     retry_count: int
     error_message: str | None
     sent_at: datetime | None
     created_at: datetime
     updated_at: datetime
 
-    model_config = {"from_attributes": True}
+    model_config = {"from_attributes": True, "populate_by_name": True}
 
 
 class NotificationListResponse(BaseModel):

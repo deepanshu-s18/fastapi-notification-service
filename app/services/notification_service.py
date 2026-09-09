@@ -50,7 +50,7 @@ class NotificationService:
             recipient=payload.recipient,
             source_service=payload.source_service,
             event_type=payload.event_type,
-            metadata=payload.metadata,
+            extra_data=payload.metadata,
             kafka_topic=kafka_topic,
             kafka_offset=kafka_offset,
             idempotency_key=idempotency_key,
@@ -160,7 +160,7 @@ class NotificationService:
                         "message": notification.message,
                         "event_type": notification.event_type,
                         "priority": notification.priority.value,
-                        "metadata": notification.metadata,
+                        "metadata": notification.extra_data,
                     }
                 )
             elif notification.channel == NotificationChannel.EMAIL:
